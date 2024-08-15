@@ -1,0 +1,125 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(61, 58, 58);
+}
+
+.calc-container {
+  width: 450px;
+  height: 720px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: black;
+  box-shadow: 5px 2px 2px darkgray;
+  border-radius: 30px;
+  gap: 20px;
+}
+
+.display {
+  width: 435px;
+  height: 200px;
+  margin-top: 7.5px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.result {
+  width: 365px;
+  max-height: 200px; /* Ensure the height is fixed */
+  box-sizing: border-box;
+  color: white;
+  margin: 0;
+  padding-right: 45px; /* Add some padding for readability */
+  font-size: 32px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: right; /* Align text to the right */
+  word-wrap: break-word;
+  word-break: break-all;
+  /* overflow: hidden; */
+}
+
+.buttons-container {
+  width: 440px;
+  height: 450px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12.5px;
+}
+
+.row-container {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn {
+  background-color: orange;
+  height: 80px;
+  width: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+}
+
+.row-5 {
+  display: flex;
+  justify-content: center;
+}
+
+.button-0 {
+  width: 175px;
+  border-radius: 55px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+p {
+  margin: 0;
+  padding-left: 34px;
+}
+
+.dot,
+.number,
+.operate-button {
+  color: white;
+}
+
+.dot,
+.number {
+  background-color: rgb(63, 62, 62);
+}
+
+.ac,
+.plusminus,
+.percent {
+  background-color: rgb(167, 167, 167);
+  color: black;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* button:hover {
+  background-color: #4d7fb4;
+  transform: scale(1.1);
+} */
+
+.clicked {
+  transform: scale(0.9);
+}
