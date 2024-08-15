@@ -7,62 +7,20 @@ btnContainer.addEventListener("click", handleClick);
 window.addEventListener("keypress", handleKey);
 equalBtn.addEventListener("click", handleEqual);
 
-// Basic Operator Functions
-
-/*
-
-// Add
-function add(expression) {
-  let result = 0;
-  let splitExp = expression.split("+");
-  for (let item of splitExp) {
-    let number = parseFloat(item);
-    // console.log(number);
-    // console.log(Number.isNaN(number), number);
-    result += number;
-  }
-  return result;
-}
-
-// Subtract
-function subtract(expression) {
-  // Case where expression starts with a negative number
-  if (expression.startsWith("-")) expression = "0" + expression;
-
-  // Split the expression by the '-' operator, keeping track of the signs
-  let splitExp = expression.split(/(?=\-)/);
-
-  // Initialize result with the first number (including its sign)
-  let result = parseFloat(splitExp[0]);
-
-  // Iterate through the remaining parts of the result
-  for (let i = 1; i < splitExp.length; i++) {
-    // converts string to float num
-    let number = parseFloat(splitExp[i]);
-    // since the values are split with a negative prepended i.e. "-80-20-30" becomes "-80","-20","-30", we can take the sum of them for subtraction
-    // Which may be a little counter-intuitive
-    result += number;
-    console.log(result);
-  }
-  return result;
-}
-
-*/
+// Heading  Basic Operator Functions
 
 function evaluateExp(expression) {
   const splitExp = splitExpression(expression);
 
-  console.log(splitExp);
   // Check if the first expression is negative or not
   if (splitExp[0] === "-" && splitExp[1] !== "-") {
     const firstNum = "-" + splitExp[1];
-    console.log(firstNum);
+
     splitExp.splice(0, 2, firstNum);
-    console.log(splitExp);
   } // Return Error if first character is anything other than negative or number
   else {
     const isNum = parseFloat(splitExp[0]);
-    console.log(isNum, Number.isNaN(isNum));
+
     if (Number.isNaN(isNum)) {
       return "Error!";
     }
@@ -77,14 +35,14 @@ function evaluateExp(expression) {
         const multiResult =
           parseFloat(splitExp[i - 1]) * parseFloat(splitExp[i + 1]);
         splitExp.splice(i - 1, 3, multiResult);
-        console.log(splitExp);
+
         i--; // We removed one element before the current element so minus 1 to index
       } else {
         // Divide uses the same concepts
         const diviResult =
           parseFloat(splitExp[i - 1]) / parseFloat(splitExp[i + 1]);
         splitExp.splice(i - 1, 3, diviResult);
-        console.log(splitExp);
+
         i--;
       }
     }
@@ -99,13 +57,13 @@ function evaluateExp(expression) {
           const addResult =
             parseFloat(splitExp[i - 1]) - parseFloat(splitExp[i + 2]);
           splitExp.splice(i - 1, 4, addResult);
-          console.log(splitExp);
+
           i--;
         } else {
           const addResult =
             parseFloat(splitExp[i - 1]) + parseFloat(splitExp[i + 1]);
           splitExp.splice(i - 1, 3, addResult);
-          console.log(splitExp);
+
           i--;
         }
       } else {
@@ -113,13 +71,13 @@ function evaluateExp(expression) {
           const subResult =
             parseFloat(splitExp[i - 1]) + parseFloat(splitExp[i + 2]);
           splitExp.splice(i - 1, 4, subResult);
-          console.log(splitExp);
+
           i--;
         } else {
           const subResult =
             parseFloat(splitExp[i - 1]) - parseFloat(splitExp[i + 1]);
           splitExp.splice(i - 1, 3, subResult);
-          console.log(splitExp);
+
           i--;
         }
       }
@@ -129,6 +87,8 @@ function evaluateExp(expression) {
   const result = splitExp[0].toString();
   return result;
 }
+
+// Function to split the expression
 
 function splitExpression(expression) {
   // Regular expression to match numbers (including decimals) and operators
@@ -147,11 +107,6 @@ function splitExpression(expression) {
 
   return parts;
 }
-
-// evaluateExp("-1+2")
-// evaluateExp("5+2-3");
-// evaluateExp("5.5+2*2/3*3");
-// evaluateExp("7.2-3.5*4+2.8/1.4*2-5");
 
 // Button Click function
 
@@ -176,28 +131,50 @@ function handleClick(event) {
 
 // Key press function
 
+// Flag to track if Enter key was pressed
+let enterPressed = false;
+
 function handleKey(event) {
   const invalidKeys = "=[]#;',./";
-  console.log(event.key, event.keyCode);
+
+  // Determine the button class based on the key pressed
   let buttonClass = invalidKeys.includes(event.key)
     ? "hello"
     : `.button-${event.key}`;
 
+  // Handle specific keys with their respective classes
   if (event.key === "c") {
     handleClear();
     return;
   }
   if (event.key === ".") buttonClass = `.dot`;
-  const btn = document.querySelector(buttonClass);
-  console.log(btn);
+  if (event.key === "+") buttonClass = `.add`;
+  if (event.key === "-") buttonClass = `.minus`;
+  if (event.key === "*") buttonClass = `.multiply`;
+  if (event.key === "/") buttonClass = `.divide`;
 
+  // Find the button element based on the key pressed
+  const btn = document.querySelector(buttonClass);
+
+  // Handle Enter key
+  if (event.key === "Enter") {
+    handleEqual();
+    enterPressed = true; // Set flag to true when Enter is pressed
+    return;
+  }
+
+  // Reset the displayResult if Enter was pressed before this number key
+  if (enterPressed && !isNaN(event.key)) {
+    displayResult.textContent = "0"; // Reset displayResult
+    enterPressed = false; // Reset the flag
+  }
+
+  // If the button element is found, update the display
   if (!btn) return;
-  // window cannot listen for special keys meta, shift, backspace etxc.
-  // if(event.key === "Backspace") console.log("BackSpace!!!")
   updateDisplay(btn.textContent);
 }
 
-// Clear calculator
+// Clear calculator display function
 
 function handleClear() {
   displayResult.textContent = "0";
@@ -224,6 +201,8 @@ function updateDisplay(text) {
   }
 }
 
+// Handles errors
+
 function handleError() {
   displayResult.textContent = "";
   // Display the error message
@@ -234,9 +213,11 @@ function handleError() {
   }, 1500); // 1000 milliseconds = 1 second
 }
 
+// Handles equal button
+
 function handleEqual() {
   const result = evaluateExp(displayResult.textContent);
-  console.log("HandleEqual", result, Number.isNaN(result));
+
   if (Number.isNaN(parseFloat(result))) {
     handleError();
     return;
@@ -244,4 +225,91 @@ function handleEqual() {
   displayResult.textContent = result;
 }
 
-5 + 5 - 6 + 1;
+
+
+
+
+
+/* Doesn't work, doesnt take operator prcedence into account
+
+function evaluateExp(expression) {
+  let splitExp = splitExpression(expression);
+
+  console.log(splitExp);
+  // Check if the first expression is negative or not
+  if (splitExp[0] === "-" && splitExp[1] !== "-") {
+    const firstNum = "-" + splitExp[1];
+    console.log(firstNum);
+    splitExp.splice(0, 2, firstNum);
+    console.log(splitExp);
+  } // Return Error if first character is anything other than negative or number
+  else {
+    const isNum = parseFloat(splitExp[0]);
+    console.log(isNum, Number.isNaN(isNum));
+    if (Number.isNaN(isNum)) {
+      return "Error!";
+    }
+  }
+
+  // let result;
+  // Look for multiplication and division first
+  for (let i = 0; i < splitExp.length; i++) {
+    let prevChar = splitExp[i - 1];
+    let currChar = splitExp[i];
+    let nextChar = splitExp[i + 1];
+    let nextCharTwo = splitExp[i + 2];
+    let operators = "*%/+-";
+    console.log(`${i} iteration`);
+
+    // if the current character is an operator
+    if (operators.includes(currChar)) {
+      switch (currChar) {
+        case "*":
+          splitExp = nextOpMinus(nextChar, nextCharTwo, splitExp, i);
+          nextChar = splitExp[i + 1];
+          result = parseFloat(prevChar) * parseFloat(nextChar);
+          splitExp.splice(i - 1, 3, result);
+          i--;
+          break;
+        case "/":
+          splitExp = nextOpMinus(nextChar, nextCharTwo, splitExp, i);
+          nextChar = splitExp[i + 1];
+          result = parseFloat(prevChar) / parseFloat(nextChar);
+          splitExp.splice(i - 1, 3, result);
+          i--;
+          break;
+        case "+":
+          splitExp = nextOpMinus(nextChar, nextCharTwo, splitExp, i);
+          nextChar = splitExp[i + 1];
+          result = parseFloat(prevChar) + parseFloat(nextChar);
+          splitExp.splice(i - 1, 3, result);
+          i--;
+          break;
+        case "-":
+          splitExp = nextOpMinus(nextChar, nextCharTwo, splitExp, i);
+          nextChar = splitExp[i + 1];
+          result = parseFloat(prevChar) - parseFloat(nextChar);
+          splitExp.splice(i - 1, 3, result);
+          i--;
+          break;
+      }
+    }
+
+    console.log(splitExp);
+  }
+  // console.log(result);
+  return result;
+}
+
+function nextOpMinus(nextChar, nextCharTwo, splitExp, index) {
+  console.log("splitExp", splitExp);
+  if (nextChar === "-") {
+    splitExp.splice(index + 1, 2, `-${nextCharTwo}`);
+    console.log(splitExp, "if 2 negs");
+    return splitExp;
+  } else {
+    return splitExp;
+  }
+}
+
+*/
